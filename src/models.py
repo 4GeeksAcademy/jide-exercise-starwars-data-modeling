@@ -16,6 +16,7 @@ class User(Base):
     username = Column(String(250), nullable=False)
     password = Column(String(250), nullable=False)
     loginStatus = Column(String(250), nullable=False)
+    favorites_id = Column(Integer, ForeignKey("favorites.id"), nullable=True)
     # registerDate = Column(Date)
 
 class Characters(Base):
@@ -27,6 +28,7 @@ class Characters(Base):
     gender = Column(String(250))
     hairColor = Column(String(250))
     eyeColor = Column(String(250))
+    favorites = relationship('Favorites', backref='characters', lazy=True)
     
 class Planets(Base):
     __tablename__ = 'planets'
@@ -37,6 +39,7 @@ class Planets(Base):
     population = Column(Integer)
     terrain = Column(String(250))
     climate = Column(String(250))
+    favorites = relationship('Favorites', backref='planets', lazy=True)
 
 class Vehicles(Base):
     __tablename__ = 'vehicles'
@@ -47,6 +50,17 @@ class Vehicles(Base):
     model = Column(String(250))
     manufacturer = Column(String(250))
     crew = Column(Integer)
+    favorites = relationship('Favorites', backref='vehicles', lazy=True)
+
+class Favorites(Base):
+    __tablename__ = 'favorites'
+    id = Column(Integer, primary_key=True)
+    characters_id = Column(Integer, ForeignKey("characters.id"), nullable=True)
+    planets_id = Column(Integer, ForeignKey("planets.id"), nullable=True)
+    vehicles_id = Column(Integer, ForeignKey("vehicles.id"), nullable=True)
+    user = relationship('User', backref='favorites', lazy=True, uselist=False)
+
+
   
 
     def to_dict(self):
